@@ -62,7 +62,6 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.UserHandle;
 import android.provider.CallLog.Calls;
-import android.provider.Settings;
 import android.telecom.DefaultDialerManager;
 import android.telecom.DisconnectCause;
 import android.telecom.PhoneAccount;
@@ -363,18 +362,7 @@ public class MissedCallNotifierImpl extends CallsManagerListenerBase implements 
 
         // Create the notification suitable for display when sensitive information is showing.
         Notification.Builder builder = mNotificationBuilderFactory.getBuilder(contextForUser);
-        if (Settings.System.getInt(mContext.getContentResolver(),
-            Settings.System.KEY_MISSED_CALL_BREATH, 0) == 1) {
-            builder.setSmallIcon(R.drawable.stat_notify_missed_call_breath)
-                .setColor(mContext.getResources().getColor(R.color.theme_color))
-                .setWhen(call.getCreationTimeMillis())
-                .setContentTitle(mContext.getText(titleResId))
-                .setContentText(expandedText)
-                .setContentIntent(createCallLogPendingIntent(userHandle))
-                .setAutoCancel(true)
-                .setDeleteIntent(createClearMissedCallsPendingIntent(userHandle));
-        } else {
-            builder.setSmallIcon(android.R.drawable.stat_notify_missed_call)
+        builder.setSmallIcon(android.R.drawable.stat_notify_missed_call)
                 .setColor(mContext.getResources().getColor(R.color.theme_color))
                 .setWhen(call.getCreationTimeMillis())
                 .setContentTitle(mContext.getText(titleResId))
@@ -386,7 +374,6 @@ public class MissedCallNotifierImpl extends CallsManagerListenerBase implements 
                 // notification is shown on the user's lock screen and they have chosen to hide
                 // sensitive notification information.
                 .setPublicVersion(publicBuilder.build());
-             }
 
         Uri handleUri = call.getHandle();
         String handle = handleUri == null ? null : handleUri.getSchemeSpecificPart();
